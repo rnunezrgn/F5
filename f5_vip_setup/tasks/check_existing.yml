@@ -1,0 +1,31 @@
+- name: Set virtual server info
+  ansible.builtin.set_fact:
+    virtual_servers: "{{ item }}"
+  loop: "{{ bigip_device_facts.virtual_servers | json_query(query_string) | default([], true) }}"
+  vars:
+    query_string: "[?name=='{{ vip_name_var }}'].{name: name, pool: default_pool}"
+  when:
+    - ( item | default("") ) or ( item is not none )
+
+- name: Debug virtual server info
+  ansible.builtin.debug:
+    msg: "{{ virtual_servers }}"
+  loop: "{{ bigip_device_facts.virtual_servers | json_query(query_string) | default([], true) }}"
+  vars:
+    query_string: "[?name=='{{ vip_name_var }}'].{name: name, pool: default_pool}"
+  when: virtual_servers is defined
+
+- name: Set fact for pool info
+  ansible.builtin.set_fact:
+    pool_info: "{{ item }}"
+  loop: "{{ bigip_device_facts.ltm_pools | json_query(query_string) | default([], true) }}"
+  vars:
+    query_string: "[?name=='{{ pool_name_var }}'].{name: name, Method: lb_method, Members: members, Monitors: monitors}"
+  when:
+    - ( item | default("") ) or ( item is not none )
+
+- name: Flag if pool exists
+  ansible.builtin.set_fact:
+    new_pool_exist: true
+  loop: "{{ lookup('dict', pool_info) }}"
+  when: pool_info is defined

@@ -1,0 +1,42 @@
+---
+# tasks/mail.yml file for f5_vip_setup
+- name: Gather BIG-IP facts
+  ansible.builtin.import_tasks: facts.yml
+
+- name: Check if VIP or Pool already exists
+  ansible.builtin.import_tasks: check_existing.yml
+
+- name: Create custom monitors if required
+  ansible.builtin.import_tasks: monitor.yml
+  when:
+    - failover_state.stdout is search('active')
+    - virtual_servers is not defined
+    - new_pool_exist is not defined
+
+- name: Configure pool and persistence
+  ansible.builtin.import_tasks: pool.yml
+  when:
+    - failover_state.stdout is search('active')
+    - virtual_servers is not defined
+    - new_pool_exist is not defined
+
+- name: Configure virtual server (VIP)
+  ansible.builtin.import_tasks: vip.yml
+  when:
+    - failover_state.stdout is search('active')
+    - virtual_servers is not defined
+    - new_pool_exist is not defined
+
+- name: Add pool members
+  ansible.builtin.import_tasks: members.yml
+  when:
+    - failover_state.stdout is search('active')
+    - virtual_servers is not defined
+    - new_pool_exist is not defined
+
+- name: Final assertion checks
+  ansible.builtin.import_tasks: assertions.yml
+  when:
+    - failover_state.stdout is search('active')
+    - virtual_servers is not defined
+    - new_pool_exist is not defined

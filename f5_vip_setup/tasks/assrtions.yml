@@ -1,0 +1,26 @@
+- name: Refresh BIG-IP pool info
+  f5networks.f5_modules.bigip_device_info:
+    provider: "{{ provider }}"
+    gather_subset:
+      - ltm-pools
+  register: bigip_device_facts
+
+- name: Show members in pool
+  ansible.builtin.debug:
+    msg: "{{ item }}"
+  loop: "{{ bigip_device_facts.ltm_pools | json_query(query_string) | default([], true) }}"
+  vars:
+    query_string: "[?name=='{{ pool_name_var }}'].[name,members[*][address,partition,state],availability_status]"
+
+- name: Set pool members fact
+  ansible.builtin.set_fact:
+    members: "{{ item }}"
+  loop: "{{ bigip_device_facts.ltm_pools | json_query(query_string) | default([], true) }}"
+  vars:
+    query_string: "[?name=='{{ pool_name_var }}'].[name,members[*][address,partition,state],availability_status]"
+
+- name: Assert pool is available
+  ansible.builtin.assert:
+    that:
+      - "'offline' in {{ members }}"
+    msg: "Pool is NOT available ..Check your BIG-IP {{ pool_name_var | upper }} configuration"

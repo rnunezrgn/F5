@@ -1,0 +1,26 @@
+- name: Create VIP
+  f5networks.f5_modules.bigip_virtual_server:
+    description: "{{ desc_var }}"
+    source: "{{ source_address }}"
+    destination: "{{ vip_addr_var }}"
+    name: "{{ vip_name_var }}"
+    pool: "{{ pool_name_var }}"
+    port: "{{ port_var }}"
+    snat: "{{ vip_snat }}"
+    provider: "{{ provider }}"
+
+- name: Modify VIP persistence profile
+  f5networks.f5_modules.bigip_virtual_server:
+    state: present
+    name: "{{ vip_name }}"
+    default_persistence_profile: "{{ vip_persis }}"
+    provider: "{{ provider }}"
+  when: vip_persis in ["source_addr", "dest_addr", "cookie"]
+
+- name: Modify VIP HTTP profile
+  f5networks.f5_modules.bigip_virtual_server:
+    state: present
+    name: "{{ vip_name }}"
+    profile: "{{ vip_http_profile }}"
+    provider: "{{ provider }}"
+  when: vip_persis == "cookie"

@@ -1,0 +1,19 @@
+- name: Query BIG-IP facts
+  f5networks.f5_modules.bigip_device_info:
+    provider: "{{ provider }}"
+    gather_subset:
+      - virtual-servers
+      - ltm-pools
+      - nodes
+  register: bigip_device_facts
+
+- name: Get failover state
+  f5networks.f5_modules.bigip_command:
+    provider: "{{ provider }}"
+    commands:
+      - show sys failover
+  register: failover_state
+
+- name: Checking Failover states
+  ansible.builtin.debug:
+    var: failover_state

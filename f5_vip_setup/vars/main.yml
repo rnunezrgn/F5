@@ -1,0 +1,23 @@
+---
+# vars file for f5_vip_setup
+vip_data:
+  - vip_app_name: "app1"
+    port: 80
+    vip_addr: "192.168.1.10"
+    description: "Web application VIP for app1"
+    node_list:
+      - "node1;10.0.0.1"
+      - "node2;10.0.0.2"
+    monitor_type: "HTTP"
+    lbmethod: "round-robin"
+    vpersis: "source_addr"
+  - vip_app_name: "app2"
+    port: 443
+    vip_addr: "192.168.1.11"
+    description: "Secure service for app2"
+    node_list:
+      - "node1;10.0.0.3"
+      - "node2;10.0.0.4"
+    monitor_type: "HTTPS"
+    lbmethod: "least-connections"
+    vpersis: "cookie"

@@ -1,0 +1,22 @@
+---
+- name: Deploy VIPs from vars
+  hosts: localhost
+  gather_facts: false
+  vars_files:
+    - vars/main.yml
+
+  tasks:
+    - name: Run role for each VIP
+      ansible.builtin.include_role:
+        name: f5_vip_setup
+      loop: "{{ vip_data }}"
+      loop_control:
+        loop_var: vip
+      vars:
+        vip_app_name: "{{ vip.vip_app_name }}"
+        port: "{{ vip.port }}"
+        vip_addr: "{{ vip.vip_addr }}"
+        node_list: "{{ vip.node_list }}"
+        monitor_type: "{{ vip.monitor_type }}"
+        lbmethod: "{{ vip.lbmethod }}"
+        vpersis: "{{ vip.vpersis }}"

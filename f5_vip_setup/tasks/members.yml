@@ -1,0 +1,10 @@
+- name: Add pool members
+  f5networks.f5_modules.bigip_pool_member:
+    provider: "{{ provider }}"
+    host: "{{ (item).split(';')[1] }}"
+    name: "{{ (item).split(';')[0] }}"
+    description: "{{ (item).split(';')[0] }}"
+    pool: "{{ pool_name_var }}"
+    port: "{{ port_var }}"
+  with_items: "{{ node_list }}"
+  notify: Save the running configuration to disk

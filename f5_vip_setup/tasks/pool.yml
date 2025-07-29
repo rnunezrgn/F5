@@ -1,0 +1,24 @@
+- name: Create Persistence Profile
+  f5networks.f5_modules.bigip_profile_persistence_src_addr:
+    name: "{{ persisNew }}"
+    state: present
+    entry_timeout: "{{ persistimeout }}"
+  when: persisNew | bool
+
+- name: Create pool without custom monitor
+  f5networks.f5_modules.bigip_pool:
+    lb_method: "{{ lbmethod_var }}"
+    name: "{{ pool_name_var }}"
+    description: "{{ desc_var }}"
+    monitors: "{{ monitor_type | lower }}"
+    provider: "{{ provider }}"
+  when: not cus_monitor | bool
+
+- name: Create pool with custom monitor
+  f5networks.f5_modules.bigip_pool:
+    lb_method: "{{ lbmethod_var }}"
+    name: "{{ pool_name_var }}"
+    description: "{{ desc_var }}"
+    monitors: "{{ monitor_name_var }}"
+    provider: "{{ provider }}"
+  when: cus_monitor | bool
