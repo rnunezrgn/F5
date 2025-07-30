@@ -1,13 +1,12 @@
 - name: Query BIG-IP facts
   f5networks.f5_modules.bigip_device_info:
-    provider:
-      server: "{{ ansible_host }}"
-      server_port: "8443" # on-prem "443" public cloud "8443"
-      validate_certs: "False"    
+    connection: local
+    provider: "{{ provider }}"
     gather_subset:
       - virtual-servers
       - ltm-pools
       - nodes
+  delegate_to: localhost
   register: bigip_device_facts
 
 - name: Get failover state
