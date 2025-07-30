@@ -3,7 +3,8 @@
     provider:
       server: "{{ ansible_host }}"
       server_port: "8443" # on-prem "443" public cloud "8443"
-      validate_certs: "False"    gather_subset:
+      validate_certs: "False"    
+    gather_subset:
       - virtual-servers
       - ltm-pools
       - nodes
