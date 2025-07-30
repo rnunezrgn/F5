@@ -7,7 +7,7 @@
 
   tasks:
     - name: Setting up provider values
-      set_fact:
+      ansible.builtin.set_fact:
         provider:
           server: "{{ ansible_host }}"
           server_port: "8443" # on-prem "443" public cloud "8443"
