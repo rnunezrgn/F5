@@ -1,11 +1,11 @@
 - name: Query BIG-IP facts
   f5networks.f5_modules.bigip_device_info:
-    connection: local
     provider: "{{ provider }}"
     gather_subset:
       - virtual-servers
       - ltm-pools
       - nodes
+  connection: local
   delegate_to: localhost
   register: bigip_device_facts
 
