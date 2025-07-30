@@ -1,6 +1,6 @@
 ---
 - name: Deploy VIPs from vars
-  hosts: localhost
+  hosts: F5-bigip-001
   gather_facts: false
   vars_files:
     - vars/main.yml
