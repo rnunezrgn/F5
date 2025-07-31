@@ -13,22 +13,35 @@
         path: "{{ input_csv }}"
       register: csv_data
 
-    - name: Format node_list for each row (split on ;)
+    - name: Get unique VIP definitions
       ansible.builtin.set_fact:
-        formatted_data: >-
+        vip_defs: >-
           {{
-            csv_data.list | map('combine', {
-              'node_list': (item.node_list.split(';') | map('trim') | list)
+            csv_data.list |
+            groupby('vip_app_name') |
+            map(attribute='1') |
+            map('unique') |
+            map('list') |
+            map('first') |
+            list
+          }}
+
+    - name: Add node_list to each VIP
+      ansible.builtin.set_fact:
+        vip_data: >-
+          {{
+            vip_defs |
+            map('combine', {
+              'node_list': csv_data.list |
+                selectattr('vip_app_name', 'equalto', item.vip_app_name) |
+                selectattr('port', 'equalto', item.port) |
+                map('combine', {
+                  'node_pair': item.node_name ~ ';' ~ item.node_ip
+                }) |
+                map(attribute='node_pair') |
+                list
             })
           }}
-      loop: "{{ csv_data.list }}"
-      loop_control:
-        label: "{{ item.vip_app_name }}"
-      register: processed_rows
-
-    - name: Merge formatted rows by vip_app_name
-      ansible.builtin.set_fact:
-        vip_data: "{{ processed_rows.results | map(attribute='ansible_facts.formatted_data') | list }}"
 
     - name: Create vars/main.yml from vip_data
       ansible.builtin.copy:
@@ -39,16 +52,13 @@
           {% for vip in vip_data %}
             - vip_app_name: "{{ vip.vip_app_name }}"
               port: {{ vip.port }}
-              desc: "{{ vip.desc }}"
+              vip_addr: "{{ vip.vip_addr }}"
+              description: "{{ vip.description }}"
               node_list:
               {% for node in vip.node_list %}
                 - "{{ node }}"
               {% endfor %}
+              monitor_type: "{{ vip.monitor_type }}"
               lbmethod: "{{ vip.lbmethod }}"
               vpersis: "{{ vip.vpersis }}"
-              monitor_type: "{{ vip.monitor_type }}"
-              cus_monitor: "{{ vip.cus_monitor }}"
-              monSend: "{{ vip.monSend }}"
-              monRec: "{{ vip.monRec }}"
-              standardvip: "{{ vip.standardvip }}"
           {% endfor %}
