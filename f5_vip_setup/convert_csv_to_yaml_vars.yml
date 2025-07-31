@@ -13,12 +13,24 @@
         path: "{{ input_csv }}"
       register: csv_data
 
-    - name: Format node_list for each row (split on ;)
+    - name: Debug raw CSV list
+      ansible.builtin.debug:
+        var: csv_data.list
+
+#    - name: Format node_list for each row (split on ;)
+#      ansible.builtin.set_fact:
+#        vip_data: "{{ vip_data | default([]) + [ item | combine({ 'node_list': item.node_list.split(';') | map('trim') | list }) ] }}"
+#      loop: "{{ csv_data.list }}"
+#      loop_control:
+#        label: "{{ item.vip_app_name }}"
+
+    - name: NEWWWW!!!! Format node_list for each row (split on ;)
       ansible.builtin.set_fact:
-        vip_data: "{{ vip_data | default([]) + [ item | combine({ 'node_list': item.node_list.split(';') | map('trim') | list }) ] }}"
+        vip_data: "{{ vip_data | default([]) + [ item | combine({ 'node_list': (item.node_list | default('') | split(';') | map('trim') | list) }) ] }}"
       loop: "{{ csv_data.list }}"
       loop_control:
         label: "{{ item.vip_app_name }}"
+
 
     - name: Create vars/main.yml from vip_data
       ansible.builtin.copy:
