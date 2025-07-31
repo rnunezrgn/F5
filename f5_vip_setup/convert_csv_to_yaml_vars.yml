@@ -17,42 +17,12 @@
       ansible.builtin.debug:
         var: csv_data.list
 
-#    - name: Format node_list for each row (split on ;)
-#      ansible.builtin.set_fact:
-#        vip_data: "{{ vip_data | default([]) + [ item | combine({ 'node_list': item.node_list.split(';') | map('trim') | list }) ] }}"
-#      loop: "{{ csv_data.list }}"
-#      loop_control:
-#        label: "{{ item.vip_app_name }}"
-
     - name: NEWWWW!!!! Format node_list for each row (split on ;)
       ansible.builtin.set_fact:
         vip_data: "{{ vip_data | default([]) + [ item | combine({ 'node_list': (item.node_list | default('') | split(';') | map('trim') | list) }) ] }}"
       loop: "{{ csv_data.list }}"
       loop_control:
         label: "{{ item.vip_app_name }}"
-
-#    - name: Create vars/main.yml from vip_data
-#      ansible.builtin.copy:
-#        dest: "{{ output_yaml }}"
-#        mode: '0644'
-#        content: |
-#          vip_data:
-#          {% for vip in vip_data %}
-#            - vip_app_name: "{{ vip.vip_app_name }}"
-#              port: {{ vip.port }}
-#              desc: "{{ vip.desc }}"
-#              node_list:
-#              {% for node in vip.node_list %}
-#                - "{{ node }}"
-#              {% endfor %}
-#              lbmethod: "{{ vip.lbmethod }}"
-#              vpersis: "{{ vip.vpersis }}"
-#              monitor_type: "{{ vip.monitor_type }}"
-#              cus_monitor: "{{ vip.cus_monitor }}"
-#              monSend: "{{ vip.monSend }}"
-#              monRec: "{{ vip.monRec }}"
-#              standardvip: "{{ vip.standardvip }}"
-#          {% endfor %}
 
     - name: Create vars/main.yml from vip_data
       ansible.builtin.copy:
