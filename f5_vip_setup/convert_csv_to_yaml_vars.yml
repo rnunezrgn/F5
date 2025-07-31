@@ -15,7 +15,8 @@
 
     - name: Format node_list for each row (split on ;)
       ansible.builtin.set_fact:
-        vip_data: "{{ vip_data | default([]) + [ item | combine({ 'node_list': item.node_list.split(';') | map('trim') | list }) ] }}"
+        #vip_data: "{{ vip_data | default([]) + [ item | combine({ 'node_list': item.node_list.split(';') | map('trim') | list }) ] }}"
+        vip_data: "{{ vip_data | default([]) + [ item | combine({ 'node_list': item.node_list.split(';') | map('trim') | list }) ] }} -> {{ vip_data | default([]) + \[item | combine({'node_list': item.node_list.split(';') | map('trim') | list})] }}"
       loop: "{{ csv_data.list }}"
       loop_control:
         label: "{{ item.vip_app_name }}"
