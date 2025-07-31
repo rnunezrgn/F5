@@ -1,2 +1,41 @@
 ---
 # defaults file for f5_vip_setup
+source_address_translation: Automap
+source_address: 0.0.0.0/0
+
+###############################################
+###########!!!!!!!! WARNING !!!!!!!!###########
+#DO NOT MODIFY VARIABLES IN THE SECTION BELOW#
+###############################################
+
+###### MONITORING VARIABLES #####
+monitor_name: "{{ monitor_type}}-{{ vip_app_name }}"
+monitor_name_var: "{{ monitor_name }}"
+monSend_var: "{{ monSend_String }}"
+monRec_var: "{{ monRec }}"
+montimeout: false
+moninterval: false
+monSend_String: get "{{ monSend }}" "{{ monitor_type }}"/1.1\r\nHost:localhost \r\nConnection':' Close\r\n\r\n
+
+##### POOL VARIABLES #####
+pool_name_var: "{{ pool_name }}"
+desc_var: "{{ desc }}"
+lbmethod_var: "{{ lbmethod }}"
+pool_port_var: "{{ port }}"
+pool_name: "{{ vip_app_name }}-{{ port }}-Pool"
+
+##### VIP VARIABLES #####
+vip_name: "{{ vip_app_name }}-{{ port }}-Vip"
+vip_name_var: "{{ vip_name }}"
+vip_addr_var: "{{ vip_addr }}"
+type: "{{ vip_type }}"
+port_var: "{{ port }}"
+vip_http_profile: "{{ http_profile }}"
+vip_snat: "{{ source_address_translation }}"
+vip_persis: "{{ vpersis }}"
+http_profile: http
+
+##### PERSISTENCE VARIABLES #####
+persisNew: false
+persisparent: false
+persistimeout: false
