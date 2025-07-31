@@ -15,20 +15,10 @@
 
     - name: Format node_list for each row (split on ;)
       ansible.builtin.set_fact:
-        formatted_data: >-
-          {{
-            csv_data.list | map('combine', {
-              'node_list': (item.node_list.split(';') | map('trim') | list)
-            })
-          }}
+        vip_data: "{{ vip_data | default([]) + [ item | combine({ 'node_list': item.node_list.split(';') | map('trim') | list }) ] }}"
       loop: "{{ csv_data.list }}"
       loop_control:
         label: "{{ item.vip_app_name }}"
-      register: processed_rows
-
-    - name: Merge formatted rows by vip_app_name
-      ansible.builtin.set_fact:
-        vip_data: "{{ processed_rows.results | map(attribute='ansible_facts.formatted_data') | list }}"
 
     - name: Create vars/main.yml from vip_data
       ansible.builtin.copy:
