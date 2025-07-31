@@ -1,0 +1,5 @@
+vip_app_name,vip_addr,port,node_name,node_ip,monitor_type,lbmethod,vpersis
+app1,192.168.1.10,80,node1,10.0.0.1,HTTP,round-robin,source_addr
+app1,192.168.1.10,80,node2,10.0.0.2,HTTP,round-robin,source_addr
+app2,192.168.1.11,443,node1,10.0.0.3,HTTPS,least-connections,cookie
+app2,192.168.1.11,443,node2,10.0.0.4,HTTPS,least-connections,cookie

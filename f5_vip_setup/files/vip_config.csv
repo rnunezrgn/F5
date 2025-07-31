@@ -3,3 +3,10 @@ app1,192.168.1.10,80,node1,10.0.0.1,HTTP,round-robin,source_addr
 app1,192.168.1.10,80,node2,10.0.0.2,HTTP,round-robin,source_addr
 app2,192.168.1.11,443,node1,10.0.0.3,HTTPS,least-connections,cookie
 app2,192.168.1.11,443,node2,10.0.0.4,HTTPS,least-connections,cookie
+
+desc,vip_app_name,port,node_list,lbmethod,vpersis,monitor_type,cus_monitor,monSend,monRec,standardvip
+Payment Gateway VIP,vip_pg_prod,443,"10.10.1.101:443;10.10.1.102:443",round-robin,cookie,https,mon_pg_https,"GET /health HTTP/1.1\r\nHost: app.example.com\r\n\r\n","200 OK",yes
+HR Portal Load Balancer,vip_hr_stg,80,"192.168.5.10:80;192.168.5.11:80",least-connections,source_addr,http,mon_hr_http_custom,"GET /status HTTP/1.1\r\nHost: hr.example.com\r\n\r\n","alive",yes
+API Gateway for Internal Apps,vip_api_int,8080,"172.16.20.5:8080;172.16.20.6:8080",ratio-member,destination_addr,tcp,mon_api_tcp,"HEAD /ping HTTP/1.1\r\nHost: api.local\r\n\r\n","up",no
+Customer Login VIP,vip_login_web,8443,"10.0.0.10:8443;10.0.0.11:8443",observed,ssl,https,mon_login_ssl,"OPTIONS /login HTTP/1.1\r\nHost: secure.example.com\r\n\r\n","success",yes
+Mobile App Backend,vip_mobile_bk,9443,"172.31.255.1:9443;172.31.255.2:9443",fastest,none,gateway_icmp,mon_mobile_icmp,"GET /alive HTTP/1.1\r\nHost: mobile-api.example.com\r\n\r\n","status: green",yes
