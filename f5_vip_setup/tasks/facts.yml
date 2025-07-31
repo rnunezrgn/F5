@@ -9,6 +9,10 @@
   delegate_to: localhost
   register: bigip_device_facts
 
+- name: DISPLAY COMPLETE BIG-IP SYSTEM INFORMATION
+  debug:
+    var: bigip_device_facts
+
 - name: Get failover state
   f5networks.f5_modules.bigip_command:
     provider: "{{ provider }}"
