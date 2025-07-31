@@ -1,0 +1,12 @@
+---
+- name: Convert CSV into vars/main.yml using Ansible only
+  hosts: localhost
+  gather_facts: false
+
+  vars:
+    input_csv: files/vip_config.csv
+    output_yaml: vars/main.yml
+
+  tasks:
+    - name: Convert files/vip_config.csv file into vars/main.yaml
+    
