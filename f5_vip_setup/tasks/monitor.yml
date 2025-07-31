@@ -4,7 +4,7 @@
     send: "{{ monSend_var }}"
     receive: "{{ monRec_var }}"
     provider: "{{ provider }}"
-  when: monitor_type == "TCP" and cus_monitor | bool
+  when: monitor_type == "TCP"
 
 - name: Create UDP monitor
   f5networks.f5_modules.bigip_monitor_udp:
@@ -12,7 +12,7 @@
     send: "{{ monSend_var }}"
     receive: "{{ monRec_var }}"
     provider: "{{ provider }}"
-  when: monitor_type == "UDP" and cus_monitor | bool
+  when: monitor_type == "UDP"
 
 - name: Create HTTP monitor
   f5networks.f5_modules.bigip_monitor_http:
@@ -20,7 +20,7 @@
     send: "{{ monSend_var }}"
     receive: "{{ monRec_var }}"
     provider: "{{ provider }}"
-  when: monitor_type == "HTTP" and cus_monitor | bool
+  when: monitor_type == "HTTP"
 
 - name: Create HTTPS monitor
   f5networks.f5_modules.bigip_monitor_https:
@@ -28,7 +28,7 @@
     send: "{{ monSend_var }}"
     receive: "{{ monRec_var }}"
     provider: "{{ provider }}"
-  when: monitor_type == "HTTPS" and cus_monitor | bool
+  when: monitor_type == "HTTPS"
 
 - name: Create ICMP monitor (fallback to HTTPS for typo?)
   f5networks.f5_modules.bigip_monitor_https:
@@ -36,4 +36,6 @@
     send: "{{ monSend_var }}"
     receive: "{{ monRec_var }}"
     provider: "{{ provider }}"
-  when: monitor_type == "ICMP" and cus_monitor | bool
+  when: monitor_type == "ICMP"
+
+# deleting this condition value from all tasks for testing purposes: "and cus_monitor | bool" <<==== Add it when project is ready
